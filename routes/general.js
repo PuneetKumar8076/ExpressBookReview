@@ -2,14 +2,15 @@ const express = require('express');
 const axios = require('axios');
 const public_users = express.Router();
 
-const books = require("./booksdb.js");
+let books = require("./booksdb.js");
 
-// ✅ Get all books
+// ✅ Get all books (using axios)
 public_users.get('/', async function (req, res) {
   try {
-    return res.status(200).json(books);
+    const response = await axios.get("http://localhost:5000/books");
+    return res.status(200).json(response.data);
   } catch (error) {
-    return res.status(500).json({ message: "Error retrieving books" });
+    return res.status(500).json({ message: "Error retrieving all books" });
   }
 });
 
@@ -17,6 +18,9 @@ public_users.get('/', async function (req, res) {
 public_users.get('/isbn/:isbn', async function (req, res) {
   try {
     const isbn = req.params.isbn;
+
+    const response = await axios.get("http://localhost:5000/books");
+    const books = response.data;
 
     if (!books[isbn]) {
       return res.status(404).json({ message: "Book not found" });
@@ -33,6 +37,9 @@ public_users.get('/isbn/:isbn', async function (req, res) {
 public_users.get('/author/:author', async function (req, res) {
   try {
     const author = req.params.author.toLowerCase();
+
+    const response = await axios.get("http://localhost:5000/books");
+    const books = response.data;
 
     const filteredBooks = Object.values(books).filter(book =>
       book.author.toLowerCase().includes(author)
@@ -53,6 +60,9 @@ public_users.get('/author/:author', async function (req, res) {
 public_users.get('/title/:title', async function (req, res) {
   try {
     const title = req.params.title.toLowerCase();
+
+    const response = await axios.get("http://localhost:5000/books");
+    const books = response.data;
 
     const filteredBooks = Object.values(books).filter(book =>
       book.title.toLowerCase().includes(title)
