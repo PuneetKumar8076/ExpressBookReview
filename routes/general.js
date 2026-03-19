@@ -1,37 +1,51 @@
 const express = require('express');
 const books = require('../booksdb');
 
-const router = express.Router();
+const general = express.Router();
 
-// Get all books
-router.get('/books', (req, res) => {
+// Q1: Get all books
+general.get("/books", (req, res) => {
   return res.json(books);
 });
 
-// Get book by ISBN
-router.get('/isbn/:isbn', (req, res) => {
+// Q2: Get book by ISBN
+general.get("/isbn/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   return res.json(books[isbn]);
 });
 
-// Get books by author
-router.get('/author/:author', (req, res) => {
-  const author = req.params.author;
-  const result = Object.values(books).filter(book => book.author === author);
-  return res.json(result);
+// Q3: Get books by author
+general.get("/author/:author", (req, res) => {
+  const author = req.params.author.toLowerCase();
+  const filteredBooks = {};
+
+  Object.keys(books).forEach(key => {
+    if (books[key].author.toLowerCase().includes(author)) {
+      filteredBooks[key] = books[key];
+    }
+  });
+
+  return res.json(filteredBooks);
 });
 
-// Get books by title
-router.get('/title/:title', (req, res) => {
-  const title = req.params.title;
-  const result = Object.values(books).filter(book => book.title === title);
-  return res.json(result);
+// Q4: Get books by title
+general.get("/title/:title", (req, res) => {
+  const title = req.params.title.toLowerCase();
+  const filteredBooks = {};
+
+  Object.keys(books).forEach(key => {
+    if (books[key].title.toLowerCase().includes(title)) {
+      filteredBooks[key] = books[key];
+    }
+  });
+
+  return res.json(filteredBooks);
 });
 
-// Get reviews
-router.get('/review/:isbn', (req, res) => {
+// Q5: Get book review
+general.get("/review/:isbn", (req, res) => {
   const isbn = req.params.isbn;
   return res.json(books[isbn].reviews);
 });
 
-module.exports = router;
+module.exports = general;
