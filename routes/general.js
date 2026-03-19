@@ -6,7 +6,7 @@ async function getAllBooks() {
         const response = await axios.get('http://localhost:5000/books');
         return response.data;
     } catch (error) {
-        console.log(error);
+        return { error: "Error fetching books" };
     }
 }
 
@@ -16,7 +16,7 @@ async function getBookByISBN(isbn) {
         const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        return { error: "Book not found" };
     }
 }
 
@@ -26,7 +26,7 @@ async function getBookByAuthor(author) {
         const response = await axios.get(`http://localhost:5000/author/${author}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        return { error: "Author not found" };
     }
 }
 
@@ -36,7 +36,7 @@ async function getBookByTitle(title) {
         const response = await axios.get(`http://localhost:5000/title/${title}`);
         return response.data;
     } catch (error) {
-        console.log(error);
+        return { error: "Title not found" };
     }
 }
 
