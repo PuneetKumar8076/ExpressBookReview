@@ -1,51 +1,48 @@
-const express = require('express');
-const books = require('../booksdb');
+const axios = require('axios');
 
-const general = express.Router();
-
-// Q1: Get all books
-general.get("/books", (req, res) => {
-  return res.json(books);
-});
-
-// Q2: Get book by ISBN
-general.get("/isbn/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
-  return res.json(books[isbn]);
-});
-
-// Q3: Get books by author
-general.get("/author/:author", (req, res) => {
-  const author = req.params.author.toLowerCase();
-  const filteredBooks = {};
-
-  Object.keys(books).forEach(key => {
-    if (books[key].author.toLowerCase().includes(author)) {
-      filteredBooks[key] = books[key];
+// Get all books
+async function getAllBooks() {
+    try {
+        const response = await axios.get('http://localhost:5000/books');
+        return response.data;
+    } catch (error) {
+        console.log(error);
     }
-  });
+}
 
-  return res.json(filteredBooks);
-});
-
-// Q4: Get books by title
-general.get("/title/:title", (req, res) => {
-  const title = req.params.title.toLowerCase();
-  const filteredBooks = {};
-
-  Object.keys(books).forEach(key => {
-    if (books[key].title.toLowerCase().includes(title)) {
-      filteredBooks[key] = books[key];
+// Get book by ISBN
+async function getBookByISBN(isbn) {
+    try {
+        const response = await axios.get(`http://localhost:5000/isbn/${isbn}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
     }
-  });
+}
 
-  return res.json(filteredBooks);
-});
+// Get books by Author
+async function getBookByAuthor(author) {
+    try {
+        const response = await axios.get(`http://localhost:5000/author/${author}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-// Q5: Get book review
-general.get("/review/:isbn", (req, res) => {
-  const isbn = req.params.isbn;
-  return res.json(books[isbn].reviews);
-});
+// Get books by Title
+async function getBookByTitle(title) {
+    try {
+        const response = await axios.get(`http://localhost:5000/title/${title}`);
+        return response.data;
+    } catch (error) {
+        console.log(error);
+    }
+}
 
-module.exports = general;
+module.exports = {
+    getAllBooks,
+    getBookByISBN,
+    getBookByAuthor,
+    getBookByTitle
+};
